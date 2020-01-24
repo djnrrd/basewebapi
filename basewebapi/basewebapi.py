@@ -1,11 +1,11 @@
-import requests 
+import requests
 import logging
 
 logging.basicConfig(format='%(asctime)s:%(module)s:%(levelname)s:%(message)s')
 
-class BaseWebAPI(object):
 
-    """Basic class for all HTTP based apis.  This class will provide the basic 
+class BaseWebAPI(object):
+    """Basic class for all HTTP based apis.  This class will provide the basic
     constructor and tranaction methods, along with making sure that the 
     connection to the web server works. All other API modules should extend 
     this class
@@ -15,7 +15,7 @@ class BaseWebAPI(object):
     to be checked by the subclass method and lasttrans updated accordingly
     """
 
-    def __init__(self, hostname, apiuser, apipass, secure = False, enforcecert = False, altport = ""):
+    def __init__(self, hostname, apiuser, apipass, secure=False, enforcecert=False, altport=""):
         """Basic constructor for web apis. While the constructor asks for the 
         usernames and password these should be used by the derived class after 
         calling this constructor as a super.
@@ -36,18 +36,17 @@ class BaseWebAPI(object):
         self.apipass = apipass
 
         if secure:
-            self.baseurl = "https://" + hostname
+            self.baseurl = f"https://{hostname}"
         else:
-            self.baseurl = "http://" + hostname
+            self.baseurl = f"http://{hostname}"
         self.enforcecert = enforcecert
-        
+
         if altport:
-            self.baseurl = self.baseurl + ":" + altport
+            self.baseurl = f"{self.baseurl}:{altport}"
         self.headers = {}
         self.lasttrans = False
-        self.lasterr = ""
-        logging.debug('Base API created to %s with %s:%s' % (self.baseurl, self.apiuser, self.apipass))
-        
+        self.lasterr = ''
+        logging.debug(f"Base API created to {self.baseurl} with {self.apiuser}:{self.apipass}")
 
     def _transaction(self, method, path, **kwargs):
         """This method is purely to make the HTTP call and will fail the 
@@ -66,10 +65,10 @@ class BaseWebAPI(object):
         was successful. If so, A requests.response object should be returned if
         successful and the exception if there were any connection errors"""
 
-        kwargs["verify"] = self.enforcecert
-        kwargs["headers"] = self.headers
+        kwargs['verify'] = self.enforcecert
+        kwargs['headers'] = self.headers
         url = self.baseurl + path
-        logging.debug('Calling %s' % (url))
+        logging.debug(f"'Calling {url}")
         try:
             r = requests.request(method, url, **kwargs)
             self.lasttrans = True
@@ -78,6 +77,5 @@ class BaseWebAPI(object):
         except Exception as e:
             self.lasttrans = False
             self.lasterr = e
-            logging.warn(e)
+            logging.warning(e)
             return e
-
