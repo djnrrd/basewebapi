@@ -36,17 +36,17 @@ class BaseWebAPI(object):
         self.apipass = apipass
 
         if secure:
-            self.baseurl = "https://" + hostname
+            self.baseurl = f"https://{hostname}"
         else:
-            self.baseurl = "http://" + hostname
+            self.baseurl = f"http://{hostname}"
         self.enforcecert = enforcecert
 
         if altport:
-            self.baseurl = self.baseurl + ":" + altport
+            self.baseurl = f"{self.baseurl}:{altport}"
         self.headers = {}
         self.lasttrans = False
-        self.lasterr = ""
-        logging.debug('Base API created to %s with %s:%s' % (self.baseurl, self.apiuser, self.apipass))
+        self.lasterr = ''
+        logging.debug(f"Base API created to {self.baseurl} with {self.apiuser}:{self.apipass}")
 
     def _transaction(self, method, path, **kwargs):
         """This method is purely to make the HTTP call and will fail the 
@@ -65,10 +65,10 @@ class BaseWebAPI(object):
         was successful. If so, A requests.response object should be returned if
         successful and the exception if there were any connection errors"""
 
-        kwargs["verify"] = self.enforcecert
-        kwargs["headers"] = self.headers
+        kwargs['verify'] = self.enforcecert
+        kwargs['headers'] = self.headers
         url = self.baseurl + path
-        logging.debug('Calling %s' % (url))
+        logging.debug(f"'Calling {url}")
         try:
             r = requests.request(method, url, **kwargs)
             self.lasttrans = True
