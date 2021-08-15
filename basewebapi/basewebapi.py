@@ -1,81 +1,77 @@
 import requests
-import logging
-
-logging.basicConfig(format='%(asctime)s:%(module)s:%(levelname)s:%(message)s')
 
 
 class BaseWebAPI(object):
     """Basic class for all HTTP based apis.  This class will provide the basic
-    constructor and tranaction methods, along with making sure that the 
-    connection to the web server works. All other API modules should extend 
-    this class
+    constructor and transaction methods, along with checking HTTP return
+    codes. All other API modules should extend this class
     
-    After running a transaction the lasttrans property will be set to true only
-    if there were a successful HTTP transaction. Any HTTP error codes will need
-    to be checked by the subclass method and lasttrans updated accordingly
+    :param hostname: The host name or IP address of the host to query. This
+        should not contain any protocols or port numbers
+    :type hostname: str
+    :param api_user: The username of the API account
+    :type api_user: str
+    :param api_pass: The password of the API account
+    :type api_pass: str
+    :param secure: (optional): Use an SSL connection instead of plaintext
+    :type secure: bool
+    :param enforce_cert: (optional): If using SSL, verify that the provided
+        certificates are signed with a trusted CA
+    :type enforce_cert: bool
+    :param alt_port: (optional): If the API service is running on a different
+        TCP port this can be defined here.
+    :type alt_port: int
+    :cvar api_user: The stored username
+    :cvar api_pass: The stored password for the user
+    :cvar base_url: The constructed url base, consisting of protocol,
+        host and alternate ports where required. Paths to methods will be
+        appended to this
+    :cvar enforce_cert: If the SSL certificate should be verified against
+        locally installed CAs
+    :cvar headers: Constructed headers to include with all transactions
     """
 
-    def __init__(self, hostname, apiuser, apipass, secure=False, enforcecert=False, altport=""):
-        """Basic constructor for web apis. While the constructor asks for the 
-        usernames and password these should be used by the derived class after 
-        calling this constructor as a super.
-
-        Parameters:
-        hostname: The host name or IP address of the host to query. This should
-            not contain any protocols or port numbers
-        apiuser: The username of the API account
-        apipass: The password of the API account
-        secure (optional): Use an SSL connection instead of plaintext
-        enforcecert (optional): If using SSL, verify that the provided
-            certificates are signed with a trusted CA
-        altport (optional): If the API service is running on a different TCP
-            port this can be defined here.
-        """
-
-        self.apiuser = apiuser
-        self.apipass = apipass
-
+    def __init__(self, hostname, api_user, api_pass, secure=False,
+                 enforce_cert=False, alt_port=''):
+        self.api_user = api_user
+        self.apiuser = api_user
+        self.api_pass = api_pass
+        self.apipass = api_pass
         if secure:
-            self.baseurl = f"https://{hostname}"
+            self.base_url = f"https://{hostname}"
         else:
-            self.baseurl = f"http://{hostname}"
-        self.enforcecert = enforcecert
-
-        if altport:
-            self.baseurl = f"{self.baseurl}:{altport}"
+            self.base_url = f"http://{hostname}"
+        self.enforce_cert = enforce_cert
+        if alt_port:
+            self.base_url = f"{self.base_url}:{alt_port}"
         self.headers = {}
-        self.lasttrans = False
-        self.lasterr = ''
-        logging.debug(f"Base API created to {self.baseurl} with {self.apiuser}:{self.apipass}")
 
     def _transaction(self, method, path, **kwargs):
-        """This method is purely to make the HTTP call and will fail the 
-        transaction on any connection based error. Any HTTP return code should 
+        """This method is purely to make the HTTP call and verify that the
+        HTTP response code is in the accepted
         be checked by the calling method as this will vary depending on the API.
 
-        Parameters:
-        method: The HTTP method / RESTful verb  to use for this transaction.
-        path: The path to the API object you wish to call.  This is the path
-            only starting with the first forward slash , as this function will 
-            add the protocol, hostname and port number appropriately
-        **kwargs: The collection of keyword arguments that the requests module
-            will accept as documented at http://docs.python-requests.org/en/master/api/#main-interface
-        
-        The lasttrans property should be checked to see if the HTTP transaction
-        was successful. If so, A requests.response object should be returned if
-        successful and the exception if there were any connection errors"""
 
-        kwargs['verify'] = self.enforcecert
+        :param method: The HTTP method / RESTful verb  to use for this
+            transaction.
+        :type method: str
+        :param path: The path to the API object you wish to call.  This is the
+            path only starting with the first forward slash , as this function
+            will add the protocol, hostname and port number appropriately
+        :type path: str
+        :param kwargs: The collection of keyword arguments that the requests
+            module will accept as documented at
+            http://docs.python-requests.org/en/master/api/#main-interface
+        :return: Requests response object
+        :rtype: requests.Response
+        :raises: (requests.RequestException, requests.ConnectionError,
+            requests.HTTPError, requests.URLRequired,
+            requests.TooManyRedirects, requests.ConnectTimeout,
+            requests.ReadTimeout)
+        """
+
+        kwargs['verify'] = self.enforce_cert
         kwargs['headers'] = self.headers
-        url = self.baseurl + path
-        logging.debug(f"'Calling {url}")
-        try:
-            r = requests.request(method, url, **kwargs)
-            self.lasttrans = True
-            logging.debug(r)
-            return r
-        except Exception as e:
-            self.lasttrans = False
-            self.lasterr = e
-            logging.warning(e)
-            return e
+        url = self.base_url + path
+        r = requests.request(method, url, **kwargs)
+        return r
