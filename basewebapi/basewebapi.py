@@ -26,7 +26,9 @@ class BaseWebAPI(object):
     def __init__(self, hostname, api_user, api_pass, secure=False,
                  enforce_cert=False, alt_port=''):
         self.api_user = api_user
+        self.apiuser = api_user
         self.api_pass = api_pass
+        self.apipass = api_pass
         if secure:
             self.base_url = f"https://{hostname}"
         else:
