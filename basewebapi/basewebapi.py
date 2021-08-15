@@ -51,14 +51,6 @@ class BaseWebAPI(object):
         HTTP response code is in the accepted
         be checked by the calling method as this will vary depending on the API.
 
-        Parameters:
-        method:
-        path:
-        **kwargs:
-
-        The lasttrans property should be checked to see if the HTTP transaction
-        was successful. If so, A requests.response object should be returned if
-        successful and the exception if there were any connection errors
 
         :param method: The HTTP method / RESTful verb  to use for this
             transaction.
