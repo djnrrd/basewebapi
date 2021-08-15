@@ -22,6 +22,17 @@ class TestBaseWebAPI(TestCase):
         self.good_sec_alt_obj = BaseWebAPI('localhost', 'nouser', 'nopass',
                                            secure=True, alt_port='9999')
 
+    def test_incorrect_arguments(self):
+        self.assertRaises(ValueError, BaseWebAPI, 123, 'nouser', 'nopass')
+        self.assertRaises(ValueError, BaseWebAPI, 'localhost', 123, 'nopass')
+        self.assertRaises(ValueError, BaseWebAPI, 'localhost', 'nouser', 123)
+        self.assertRaises(ValueError, BaseWebAPI, 'localhost', 'nouser',
+                          'nopass', secure='Yes')
+        self.assertRaises(ValueError, BaseWebAPI, 'localhost', 'nouser',
+                          'nopass', secure=True, enforce_cert='Yes')
+        self.assertRaises(TypeError, BaseWebAPI, 'localhost', 'nouser',
+                          'nopass', secure=True, fake_kwarg='Yes')
+
     def test_object_creation(self):
         # Make sure object instance is correct
         self.assertIsInstance(self.good_obj, BaseWebAPI)

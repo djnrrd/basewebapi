@@ -33,6 +33,8 @@ class BaseWebAPI(object):
 
     def __init__(self, hostname, api_user, api_pass, secure=False,
                  enforce_cert=False, alt_port=''):
+        # Input error checking
+        self._input_error_check(**locals())
         self.api_user = api_user
         self.apiuser = api_user
         self.api_pass = api_pass
@@ -45,6 +47,15 @@ class BaseWebAPI(object):
         if alt_port:
             self.base_url = f"{self.base_url}:{alt_port}"
         self.headers = {}
+
+    @staticmethod
+    def _input_error_check(**kwargs):
+        for x in ('hostname', 'api_user', 'api_pass', 'alt_port'):
+            if not isinstance(kwargs[x], str):
+                raise ValueError(f"{x} must be a string")
+        for x in ('secure', 'enforce_cert'):
+            if not isinstance(kwargs[x], bool):
+                raise ValueError(f"{x} must be a boolean")
 
     def _transaction(self, method, path, **kwargs):
         """This method is purely to make the HTTP call and verify that the
