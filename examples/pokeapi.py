@@ -1,5 +1,6 @@
 from basewebapi import BaseWebAPI
 
+
 class PokeAPI(BaseWebAPI):
 
     def __init__(self):
