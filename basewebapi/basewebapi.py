@@ -21,6 +21,14 @@ class BaseWebAPI(object):
     :param alt_port: (optional): If the API service is running on a different
         TCP port this can be defined here.
     :type alt_port: int
+    :cvar api_user: The stored username
+    :cvar api_pass: The stored password for the user
+    :cvar base_url: The constructed url base, consisting of protocol,
+        host and alternate ports where required. Paths to methods will be
+        appended to this
+    :cvar enforce_cert: If the SSL certificate should be verified against
+        locally installed CAs
+    :cvar headers: Constructed headers to include with all transactions
     """
 
     def __init__(self, hostname, api_user, api_pass, secure=False,
