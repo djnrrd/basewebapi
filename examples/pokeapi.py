@@ -15,6 +15,8 @@ class PokeAPI(BaseWebAPI):
 
     def get_pokemon(self, pokemon_name):
         """Get data about an individual pokemon"""
+        # Path should be the absolute path to the API resource, in this
+        # instance the pokemon name makes up part of the path
         path = f"/api/v2/pokemon/{pokemon_name}/"
         pokemon_data = self._transaction('get', path)
         # any further processing you may need to do

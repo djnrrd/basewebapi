@@ -47,6 +47,7 @@ class BaseWebAPI(object):
         if alt_port:
             self.base_url = f"{self.base_url}:{alt_port}"
         self.headers = {}
+        self.status_codes = [200]
 
     @staticmethod
     def _input_error_check(**kwargs):
@@ -85,4 +86,9 @@ class BaseWebAPI(object):
         kwargs['headers'] = self.headers
         url = self.base_url + path
         r = requests.request(method, url, **kwargs)
-        return r
+        if r.status_code not in self.status_codes:
+            raise requests.exceptions.HTTPError(f"HTTP Status code "
+                                                f"{r.status_code} not in "
+                                                f"valid response codes")
+        else:
+            return r
