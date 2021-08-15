@@ -20,7 +20,7 @@ class BaseWebAPI(object):
     :type enforce_cert: bool
     :param alt_port: (optional): If the API service is running on a different
         TCP port this can be defined here.
-    :type alt_port: int
+    :type alt_port: str
     :cvar api_user: The stored username
     :cvar api_pass: The stored password for the user
     :cvar base_url: The constructed url base, consisting of protocol,
