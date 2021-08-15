@@ -28,4 +28,5 @@ Usage
 #####
 
 This library is designed to be inherited by other python classes and provide
-the basic code for the HTTP transactions
+the basic code for the HTTP transactions. Examples on how to do this can be
+found in the /examples directory.
