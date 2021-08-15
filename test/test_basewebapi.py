@@ -7,8 +7,12 @@ import requests
 # on the network
 
 def mocked_requests_request(*args, **kwargs):
+    ret_obj = mock.Mock(spec=requests.Response)
     if args[0] == 'get' and args[1] == 'http://localhost/':
-        return mock.Mock(spec=requests.Response)
+        ret_obj.status_code = 200
+    elif args[0] == 'post':
+        ret_obj.status_code = 500
+    return ret_obj
 
 
 class TestBaseWebAPI(TestCase):
@@ -21,6 +25,9 @@ class TestBaseWebAPI(TestCase):
                                           secure=True)
         self.good_sec_alt_obj = BaseWebAPI('localhost', 'nouser', 'nopass',
                                            secure=True, alt_port='9999')
+        self.good_sec_alt_obj = BaseWebAPI('localhost', 'nouser', 'nopass',
+                                           secure=True, alt_port='9999')
+        self.bad_status_obj = BaseWebAPI('localhost', 'nouser', 'nopass')
 
     def test_incorrect_arguments(self):
         self.assertRaises(ValueError, BaseWebAPI, 123, 'nouser', 'nopass')
@@ -83,3 +90,8 @@ class TestBaseWebAPI(TestCase):
         # redirects, mocked to get the proper exception back from requests
         self.assertRaises(requests.exceptions.TooManyRedirects,
                           self.good_obj._transaction, 'get', '/redirects')
+
+    @mock.patch('requests.request', side_effect=mocked_requests_request)
+    def test_status_code(self, mock_req):
+        self.assertRaises(requests.exceptions.HTTPError,
+                          self.bad_status_obj._transaction, 'post', '/')

@@ -87,6 +87,8 @@ class BaseWebAPI(object):
         url = self.base_url + path
         r = requests.request(method, url, **kwargs)
         if r.status_code not in self.status_codes:
-            r.raise_for_status()
+            raise requests.exceptions.HTTPError(f"HTTP Status code "
+                                                f"{r.status_code} not in "
+                                                f"valid response codes")
         else:
             return r
