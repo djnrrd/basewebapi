@@ -90,18 +90,21 @@ class JSONBaseList(list):
         """
         ret_list = list()
         if field in self[0]:
-            if fuzzy:
-                if isinstance(search_val, str):
-                    ret_list = [x for x in self if
-                                search_val.lower() in x[field].lower()]
-                else:
-                    ret_list = [x for x in self if search_val in x[field]]
-            else:
-                if isinstance(search_val, str):
-                    ret_list = [x for x in self if
-                                x[field].lower() == search_val.lower()]
-                else:
-                    ret_list = [x for x in self if x[field] == search_val]
+            for item in self:
+                field_val = item[field]
+                # Don't match anything that's not present.
+                if field_val:
+                    # If we're dealing with strings, move them to lower case
+                    if all([isinstance(search_val, str),
+                           isinstance(field_val, str)]):
+                        field_val = field_val.lower()
+                        search_val = search_val.lower()
+                    if fuzzy:
+                        ret_list.append(item) if search_val in field_val \
+                            else None
+                    else:
+                        ret_list.append(item) if field_val == search_val \
+                            else None
             return self.__class__(ret_list)
         else:
             raise KeyError(f"Could not find {field} in objects")

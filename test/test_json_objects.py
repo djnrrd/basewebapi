@@ -10,6 +10,9 @@ bad_json_list_objects = [{'name': 'Foo', 'id': 1}, 'Bar']
 child_objects = {'name': 'Foo', 'id': 1,
                  'friends': [{'name': 'Bar', 'id': 2},
                              {'name': 'Baz', 'id': 3}]}
+bad_text_filter_list = [{'name': 'Foo', 'id': 1}, {'name': None, 'id': 2},
+                        {'name': 'Baz', 'id': 3}]
+
 
 class TestJSONBaseObject(TestCase):
 
@@ -34,7 +37,8 @@ class TestJSONBaseObject(TestCase):
 class TestJSONBaseList(TestCase):
 
     def setUp(self):
-        self.good_list = JSONBaseList.from_json(good_json_list, JSONBaseObject)
+        self.good_list = JSONBaseList.from_json(good_json_list)
+        self.bad_text_list = JSONBaseList.from_json(bad_text_filter_list)
 
     def test_from_json(self):
         self.assertRaises(ValueError, JSONBaseList.from_json,
@@ -59,3 +63,6 @@ class TestJSONBaseList(TestCase):
         fuzzy_filter_test = self.good_list.filter('name', 'ba', fuzzy=True)
         self.assertIsInstance(fuzzy_filter_test, JSONBaseList)
         self.assertEqual(2, len(fuzzy_filter_test))
+        text_filter_test = self.bad_text_list.filter('name', 'ba', fuzzy=True)
+        self.assertIsInstance(text_filter_test, JSONBaseList)
+        self.assertEqual(1, len(text_filter_test))
