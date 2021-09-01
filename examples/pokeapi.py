@@ -1,8 +1,8 @@
-from basewebapi import BaseWebAPI
-from basewebapi import json_objects as jo
+from basewebapi import BaseWebAPI, JSONBaseObject, JSONBaseList
 
 
-class Pokemon(jo.JSONBaseObject):
+
+class Pokemon(JSONBaseObject):
 
     def __init__(self, **kwargs):
         """The Pokemon data type includes many lists of other data types.
@@ -13,7 +13,7 @@ class Pokemon(jo.JSONBaseObject):
         super().__init__(child_objects=child_objects, **kwargs)
 
 
-class PokemonAbilities(jo.JSONBaseList):
+class PokemonAbilities(JSONBaseList):
 
     @classmethod
     def from_json(cls, data):
