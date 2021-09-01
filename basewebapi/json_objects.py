@@ -1,5 +1,20 @@
 class JSONBaseObject(dict):
+    """Create a basic object representing a RESTful API JSON object.  If
+    you need to enforce certain key/value pairs be present in an object,
+    override the __init__ method and provide a list or tuple of these
+    keys as object_keys.
 
+    If there are child objects or lists of objects expected, a dictionary
+    of key and object type can be provided as child_objects to create
+    those objects.
+
+    :param object_keys: A list of keys to enforce within the object
+    :type object_keys: list
+    :param child_objects: A dictionary of keys and object types to raise
+        child objects as
+    :type child_objects: dict
+    :param kwargs: The JSON object in keyword argument format
+    """
     def __str__(self):
         if 'name' in self:
             return self['name']
@@ -11,6 +26,16 @@ class JSONBaseObject(dict):
             return self['name']
         else:
             return super().__repr__()
+
+    def __init__(self, object_keys=[], child_objects={}, **kwargs):
+        for k in kwargs:
+            if all([object_keys, k not in object_keys]):
+                raise KeyError(f"{k} is not a valid key for "
+                               f"self.__class__.__name__")
+            if all([k in child_objects, kwargs[k]]):
+                kwargs[k] = child_objects[k].from_json(kwargs[k])
+        super().__init__(**kwargs)
+
 
     @classmethod
     def from_json(cls, data):
@@ -31,7 +56,7 @@ class JSONBaseObject(dict):
 class JSONBaseList(list):
 
     @classmethod
-    def from_json(cls, data, item_class):
+    def from_json(cls, data, item_class=JSONBaseObject):
         """Create a new list from JSON data
 
         :param data: JSON data returned from API

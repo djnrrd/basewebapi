@@ -7,17 +7,28 @@ good_json_list = [{'name': 'Foo', 'id': 1}, {'name': 'Bar', 'id': 2},
                   {'name': 'Baz', 'id': 3}]
 bad_json_list = {'name': 'Foo', 'id': 1}
 bad_json_list_objects = [{'name': 'Foo', 'id': 1}, 'Bar']
-
+child_objects = {'name': 'Foo', 'id': 1,
+                 'friends': [{'name': 'Bar', 'id': 2},
+                             {'name': 'Baz', 'id': 3}]}
 
 class TestJSONBaseObject(TestCase):
 
     def setUp(self):
         self.good_object = jo.JSONBaseObject.from_json(good_json_object)
+        self.child_objects = jo.JSONBaseObject(
+            child_objects={'friends': jo.JSONBaseList}, **child_objects)
 
     def test_from_json(self):
         self.assertRaises(ValueError, jo.JSONBaseObject.from_json,
                           bad_json_object)
         self.assertIsInstance(self.good_object, jo.JSONBaseObject)
+
+    def test__init__(self):
+        self.assertRaises(KeyError, jo.JSONBaseObject, ['name', 'invalid'],
+                          **child_objects)
+        self.assertIsInstance(self.child_objects['friends'], jo.JSONBaseList)
+        for json_object in self.child_objects['friends']:
+            self.assertIsInstance(json_object, jo.JSONBaseObject)
 
 
 class TestJSONBaseList(TestCase):
