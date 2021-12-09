@@ -36,7 +36,6 @@ class JSONBaseObject(dict):
                 kwargs[k] = child_objects[k].from_json(kwargs[k])
         super().__init__(**kwargs)
 
-
     @classmethod
     def from_json(cls, data):
         """Create a new object from JSON data

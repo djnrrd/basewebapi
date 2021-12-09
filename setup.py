@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(name='basewebapi_python',
       version='0.3.2',
-      install_requires=['requests'],
+      install_requires=['requests, aiohttp'],
       author='Ralph Taylor',
       author_email='djnrrd@gmail.com',
       url='https://github.com/djnrrd/basewebapi',
