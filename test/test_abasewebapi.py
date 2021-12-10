@@ -16,10 +16,12 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
         self.good_secure_obj = AsyncBaseWebAPI('localhost', 'nouser', 'nopass',
                                                secure=True)
         self.good_sec_alt_obj = AsyncBaseWebAPI('localhost', 'nouser', 'nopass',
-                                           secure=True, alt_port='9999')
+                                                secure=True, alt_port='9999')
         self.good_sec_alt_obj = AsyncBaseWebAPI('localhost', 'nouser', 'nopass',
-                                           secure=True, alt_port='9999')
+                                                secure=True, alt_port='9999')
         self.bad_status_obj = AsyncBaseWebAPI('localhost', 'nouser', 'nopass')
+        self.http_status_obj = AsyncBaseWebAPI('httpstat.us', 'nouser',
+                                                'nopass')
 
     async def test_context_manager(self):
         async with self.context_class('no_url', 'no_user', 'no_pass') as conn:
@@ -67,6 +69,12 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
     async def test_good_request(self):
         # Check we get the appropriate response back from requests
         async with self.good_obj as conn:
-            result = await self.good_obj._transaction('get',
-                                                      '/api/v2/pokemon/mew')
-        self.assertIsInstance(result, aiohttp.ClientResponse)
+            result = await conn._transaction('get', '/api/v2/pokemon/mew')
+        self.assertIsInstance(result, dict)
+
+    async def test_raise_for_status(self):
+        async with self.http_status_obj as conn:
+            try:
+                result = await conn._transaction('get', '/401')
+            except BaseException as e:
+                self.assertIsInstance(e, aiohttp.ClientResponseError)

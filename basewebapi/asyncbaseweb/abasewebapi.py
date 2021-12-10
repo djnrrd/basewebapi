@@ -1,6 +1,5 @@
 from __future__ import annotations
 import aiohttp
-import asyncio
 from typing import Optional, Type
 from types import TracebackType
 
@@ -128,10 +127,11 @@ class AsyncBaseWebAPI(object):
         kwargs['headers'] = self.headers
         url = self.base_url + path
         async with self._session.request(method, url, **kwargs) as conn:
-            return await conn
-        #if r.status not in self.status_codes:
-        #    raise aiohttp.ClientResponseError(f"HTTP Status code "
-        #                                        f"{r.status_code} not in "
-        #                                        f"valid response codes")
-        #else:
-        # return r
+            if conn.status not in self.status_codes:
+                raise aiohttp.ClientResponseError(conn.request_info, (conn, ),
+                                                  status=conn.status,
+                                                  message=await conn.text())
+            if conn.content_type == 'application/json':
+                return await conn.json()
+            else:
+                return await conn.text()
