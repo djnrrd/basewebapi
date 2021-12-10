@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class JSONBaseObject(dict):
     """Create a basic object representing a RESTful API JSON object.  If
     you need to enforce certain key/value pairs be present in an object,
@@ -15,19 +18,23 @@ class JSONBaseObject(dict):
     :type child_objects: dict
     :param kwargs: The JSON object in keyword argument format
     """
-    def __str__(self):
+
+    def __str__(self) -> str:
         if 'name' in self:
             return self['name']
         else:
             return super().__str__()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if 'name' in self:
             return self['name']
         else:
             return super().__repr__()
 
-    def __init__(self, object_keys=[], child_objects={}, **kwargs):
+    def __init__(self,
+                 object_keys: list[str] = [],
+                 child_objects: dict[str, object] = {},
+                 **kwargs) -> None:
         for k in kwargs:
             if all([object_keys, k not in object_keys]):
                 raise KeyError(f"{k} is not a valid key for "
@@ -37,7 +44,7 @@ class JSONBaseObject(dict):
         super().__init__(**kwargs)
 
     @classmethod
-    def from_json(cls, data):
+    def from_json(cls, data: dict) -> JSONBaseObject:
         """Create a new object from JSON data
 
         :param data: JSON data returned from API
@@ -55,7 +62,9 @@ class JSONBaseObject(dict):
 class JSONBaseList(list):
 
     @classmethod
-    def from_json(cls, data, item_class=JSONBaseObject):
+    def from_json(cls,
+                  data: list,
+                  item_class: JSONBaseObject = JSONBaseObject) -> JSONBaseList:
         """Create a new list from JSON data
 
         :param data: JSON data returned from API
@@ -74,8 +83,9 @@ class JSONBaseList(list):
         else:
             raise ValueError('Expected list object')
 
-    def filter(self, field, search_val, fuzzy=False):
-        """Search for an object and return an List of matches
+    def filter(self, field: str, search_val: str, fuzzy: bool = False) \
+            -> JSONBaseList:
+        """Search for an object and return a List of matches
 
         :param field: The search field
         :type field: str
@@ -85,7 +95,7 @@ class JSONBaseList(list):
             substring of the value
         :type fuzzy: bool
         :return: A list of matches
-        :rtype: s1BaseList
+        :rtype: JSONBaseList
         """
         ret_list = list()
         if field in self[0]:
