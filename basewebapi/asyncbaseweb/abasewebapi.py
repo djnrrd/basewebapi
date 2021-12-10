@@ -1,6 +1,6 @@
 from __future__ import annotations
 import aiohttp
-from typing import Optional, Type
+from typing import Optional, Type, Union
 from types import TracebackType
 
 
@@ -35,8 +35,9 @@ class AsyncBaseWebAPI(object):
     """
 
     def __init__(self, hostname: str, api_user: str, api_pass: str,
-                 secure: bool=False, enforce_cert: bool=False,
-                 alt_port: str='', basic_auth: bool=False) -> AsyncBaseWebAPI:
+                 secure: bool=False, enforce_cert: bool = False,
+                 alt_port: str = '', basic_auth: bool = False) \
+            -> AsyncBaseWebAPI:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
@@ -54,15 +55,19 @@ class AsyncBaseWebAPI(object):
         self._session = None
 
     def __enter__(self) -> None:
+        """Should not be using with the normal context manager"""
         raise TypeError("Use async with instead")
 
     def __exit__(self,
                  exc_type: Optional[Type[BaseException]],
                  exc_val: Optional[BaseException],
                  exc_tb: Optional[TracebackType]) -> None:
+        """This should never be called but is required for the normal context
+        manager"""
         pass
 
     async def __aenter__(self) -> AsyncBaseWebAPI:
+        """Entry point for the async context manager"""
         await self.open()
         return self
 
@@ -70,18 +75,20 @@ class AsyncBaseWebAPI(object):
                         exc_type: Optional[Type[BaseException]],
                         exc_val: Optional[BaseException],
                         exc_tb: Optional[TracebackType]) -> None:
+        """Exit point for the async context manager"""
         await self.close()
 
     async def open(self) -> None:
+        """Open an aiohttp.ClientSession that's stored in the object"""
         if not self._session:
             if self.basic_auth:
                 auth = aiohttp.BasicAuth(self.api_user, self.api_pass)
             else:
                 auth = None
-            self._session = aiohttp.ClientSession(
-                                                  auth=auth)
+            self._session = aiohttp.ClientSession(auth=auth)
 
     async def close(self) -> None:
+        """Close the aiohttp.ClientSession stored in the object"""
         if self._session:
             try:
                 await self._session.close()
@@ -92,6 +99,7 @@ class AsyncBaseWebAPI(object):
 
     @staticmethod
     def _input_error_check(**kwargs) -> None:
+        """Check the supplied values are the correct data types"""
         for x in ('hostname', 'api_user', 'api_pass', 'alt_port'):
             if not isinstance(kwargs[x], str):
                 raise ValueError(f"{x} must be a string")
@@ -99,9 +107,10 @@ class AsyncBaseWebAPI(object):
             if not isinstance(kwargs[x], bool):
                 raise ValueError(f"{x} must be a boolean")
 
-    async def _transaction(self, method, path, **kwargs):
+    async def _transaction(self, method: str, path: str, **kwargs) \
+            -> Union[str, dict, list]:
         """This method is purely to make the HTTP call and verify that the
-        HTTP response code is in the accepted
+        HTTP status code is in the accepted list defined in __init__
         be checked by the calling method as this will vary depending on the API.
 
 

@@ -64,7 +64,7 @@ class BaseWebAPI(object):
     def _transaction(self, method: str, path: str, **kwargs) \
             -> requests.Response:
         """This method is purely to make the HTTP call and verify that the
-        HTTP response code is in the accepted
+        HTTP response code is in the accepted list defined in __init__
         be checked by the calling method as this will vary depending on the API.
 
 
