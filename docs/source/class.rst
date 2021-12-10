@@ -8,6 +8,12 @@ BaseWebAPI
 .. autoclass:: basewebapi.BaseWebAPI
    :members:
 
+AsyncBaseWebAPI
+===============
+
+.. autoclass:: basewebapi.asyncbasewebapi.AsyncBaseWebAPI
+   :members:
+
 JSONBaseObject
 ==============
 

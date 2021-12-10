@@ -12,10 +12,8 @@ class JSONBaseObject(dict):
     those objects.
 
     :param object_keys: A list of keys to enforce within the object
-    :type object_keys: list
     :param child_objects: A dictionary of keys and object types to raise
         child objects as
-    :type child_objects: dict
     :param kwargs: The JSON object in keyword argument format
     """
 
@@ -48,9 +46,7 @@ class JSONBaseObject(dict):
         """Create a new object from JSON data
 
         :param data: JSON data returned from API
-        :type data: dict
         :return: Class object
-        :rtype: JSONBaseObject
         :raises ValueError: If a dictionary is not provided
         """
         if isinstance(data, dict):
@@ -68,11 +64,8 @@ class JSONBaseList(list):
         """Create a new list from JSON data
 
         :param data: JSON data returned from API
-        :type data: list
         :param item_class: The class to create individual objects as
-        :type data: object
         :return: Class object
-        :rtype: JSONBaseList
         :raises ValueError: If a list is not provided
         """
         if isinstance(data, list):
@@ -88,14 +81,10 @@ class JSONBaseList(list):
         """Search for an object and return a List of matches
 
         :param field: The search field
-        :type field: str
         :param search_val: The search value
-        :type search_val: (str, int, bool, float)
         :param fuzzy: If the search should be for the exact value (False) or a
             substring of the value
-        :type fuzzy: bool
         :return: A list of matches
-        :rtype: JSONBaseList
         """
         ret_list = list()
         if field in self[0]:
