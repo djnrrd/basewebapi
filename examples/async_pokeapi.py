@@ -3,7 +3,6 @@ from typing import Union
 from basewebapi.asyncbaseweb import AsyncBaseWebAPI
 from basewebapi import JSONBaseObject, JSONBaseList
 import asyncio
-import pprint
 
 
 class Pokemon(JSONBaseObject):
@@ -113,4 +112,5 @@ def main() -> list:
 
 if __name__ == '__main__':
     results = main()
-    pprint.pprint(results)
+    print([x for x in results])
+    print([type(x) for x in results])
