@@ -1,3 +1,4 @@
+from __future__ import annotations
 import requests
 
 
@@ -31,8 +32,9 @@ class BaseWebAPI(object):
     :cvar headers: Constructed headers to include with all transactions
     """
 
-    def __init__(self, hostname, api_user, api_pass, secure=False,
-                 enforce_cert=False, alt_port=''):
+    def __init__(self, hostname: str, api_user: str, api_pass: str,
+                 secure: bool = False, enforce_cert: bool = False,
+                 alt_port: str = '') -> BaseWebAPI:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
@@ -50,7 +52,8 @@ class BaseWebAPI(object):
         self.status_codes = [200]
 
     @staticmethod
-    def _input_error_check(**kwargs):
+    def _input_error_check(**kwargs) -> None:
+        """Check the supplied values are the correct data types"""
         for x in ('hostname', 'api_user', 'api_pass', 'alt_port'):
             if not isinstance(kwargs[x], str):
                 raise ValueError(f"{x} must be a string")
@@ -58,7 +61,8 @@ class BaseWebAPI(object):
             if not isinstance(kwargs[x], bool):
                 raise ValueError(f"{x} must be a boolean")
 
-    def _transaction(self, method, path, **kwargs):
+    def _transaction(self, method: str, path: str, **kwargs) \
+            -> requests.Response:
         """This method is purely to make the HTTP call and verify that the
         HTTP response code is in the accepted
         be checked by the calling method as this will vary depending on the API.
