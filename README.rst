@@ -3,7 +3,9 @@ basewebapi
 ##########
 
 A basic python module for creating object orientated python modules for web
-apis powered by the requests library.
+apis powered by the requests and aiohttp libraries.
+
+
 
 Installation
 ############
