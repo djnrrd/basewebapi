@@ -24,6 +24,7 @@ class AsyncBaseWebAPI(object):
     :param alt_port: (optional): If the API service is running on a different
         TCP port this can be defined here.
     :type alt_port: str
+    :param basic_auth: If HTTP Basic auth should be used
     :cvar api_user: The stored username
     :cvar api_pass: The stored password for the user
     :cvar base_url: The constructed url base, consisting of protocol,
@@ -32,12 +33,14 @@ class AsyncBaseWebAPI(object):
     :cvar enforce_cert: If the SSL certificate should be verified against
         locally installed CAs
     :cvar headers: Constructed headers to include with all transactions
+    :cvar status_codes: List of acceptable status codes from the API service
+    :cvar basic_auth: If HTTP Basic auth should be used
     """
 
     def __init__(self, hostname: str, api_user: str, api_pass: str,
-                 secure: bool=False, enforce_cert: bool = False,
+                 secure: bool = False, enforce_cert: bool = False,
                  alt_port: str = '', basic_auth: bool = False) \
-            -> AsyncBaseWebAPI:
+            -> None:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
@@ -135,7 +138,7 @@ class AsyncBaseWebAPI(object):
         url = self.base_url + path
         async with self._session.request(method, url, **kwargs) as conn:
             if conn.status not in self.status_codes:
-                raise aiohttp.ClientResponseError(conn.request_info, (conn, ),
+                raise aiohttp.ClientResponseError(conn.request_info, (conn,),
                                                   status=conn.status,
                                                   message=await conn.text())
             if conn.content_type == 'application/json':
