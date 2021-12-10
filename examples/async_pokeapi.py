@@ -1,4 +1,7 @@
-from basewebapi import BaseWebAPI, JSONBaseObject, JSONBaseList
+from basewebapi.asyncbaseweb import AsyncBaseWebAPI
+from basewebapi import JSONBaseObject, JSONBaseList
+import asyncio
+import pprint
 
 
 class Pokemon(JSONBaseObject):
@@ -25,7 +28,7 @@ class PokemonAbility(JSONBaseObject):
     pass
 
 
-class PokeAPI(BaseWebAPI):
+class PokeAPI(AsyncBaseWebAPI):
 
     def __init__(self):
         """The Poke API is a simple, static API with no authentication so
@@ -37,18 +40,46 @@ class PokeAPI(BaseWebAPI):
         # dictionary
         self.headers['Accept'] = 'application/json'
 
-    def get_pokemon(self, pokemon_name):
+    async def __aenter__(self):
+        # Always await super() first
+        obj = await super().__aenter__()
+        # If you need to do any sign in transactions to create header keys
+        # these could be done here
+        return obj
+
+    async def get_pokemon(self, pokemon_name):
         """Get data about an individual pokemon"""
         # Path should be the absolute path to the API resource, in this
         # instance the pokemon name makes up part of the path
         path = f"/api/v2/pokemon/{pokemon_name}/"
-        pokemon_data = self._transaction('get', path)
+        # get the data in an Async call
+        pokemon_data = await self._transaction('get', path)
         # any further processing you may need to do
         return pokemon_data
 
-    def _transaction(self, method, path, **kwargs):
+    async def _transaction(self, method, path, **kwargs):
         # Any pre-processing here
-        r = super()._transaction(method, path, **kwargs)
-        # We know that this is a JSON based API so we can use the requests
-        # json method of the Response object
-        return r.json()
+        r = await super()._transaction(method, path, **kwargs)
+        # Post processing here
+        # AsyncBaseWebAPI will automatically parse 'application/json'
+        # payloads, so just return the result text
+        return r
+
+
+async def async_main():
+    # use the api
+    async with PokeAPI() as poke_api:
+        calls = list()
+        for pokemon in ['mew', 'ditto', 'pikachu', 'smoochum']:
+            calls.append(poke_api.get_pokemon(pokemon))
+        return await asyncio.gather(*calls)
+
+
+def main():
+    loop = asyncio.get_event_loop()
+    return loop.run_until_complete(async_main())
+
+
+if __name__ == '__main__':
+    results = main()
+    pprint.pprint(results)
