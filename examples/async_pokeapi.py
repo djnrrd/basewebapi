@@ -7,7 +7,7 @@ import asyncio
 
 class Pokemon(JSONBaseObject):
 
-    def __init__(self, **kwargs) -> Pokemon:
+    def __init__(self, **kwargs) -> None:
         """The Pokemon data type includes many lists of other data types.
         Define just the 'abilities' field to create the child
         PokemonAbilities list.
@@ -33,7 +33,7 @@ class PokemonAbility(JSONBaseObject):
 
 class PokeAPI(AsyncBaseWebAPI):
 
-    def __init__(self) -> PokeAPI:
+    def __init__(self) -> None:
         """The Poke API is a simple, static API with no authentication so
         object initialisation does not require external arguments"""
         # Call super with the static values of the Poke API
