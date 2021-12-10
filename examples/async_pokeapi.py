@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Union
-from basewebapi.asyncbaseweb import AsyncBaseWebAPI
+from basewebapi.asyncbasewebapi import AsyncBaseWebAPI
 from basewebapi import JSONBaseObject, JSONBaseList
 import asyncio
 

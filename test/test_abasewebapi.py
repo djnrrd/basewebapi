@@ -1,5 +1,5 @@
 from unittest import IsolatedAsyncioTestCase
-from basewebapi.asyncbaseweb import AsyncBaseWebAPI
+from basewebapi.asyncbasewebapi import AsyncBaseWebAPI
 import aiohttp
 import asyncio
 
