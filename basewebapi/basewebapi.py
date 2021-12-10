@@ -30,11 +30,12 @@ class BaseWebAPI(object):
     :cvar enforce_cert: If the SSL certificate should be verified against
         locally installed CAs
     :cvar headers: Constructed headers to include with all transactions
+    :cvar status_codes: List of acceptable status codes from the API service
     """
 
     def __init__(self, hostname: str, api_user: str, api_pass: str,
                  secure: bool = False, enforce_cert: bool = False,
-                 alt_port: str = '') -> BaseWebAPI:
+                 alt_port: str = '') -> None:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
