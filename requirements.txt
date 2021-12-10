@@ -1,3 +1,4 @@
 requests
 sphinx
+sphinx_autodoc_typehints
 aiohttp
