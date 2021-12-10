@@ -22,7 +22,9 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
         self.bad_status_obj = AsyncBaseWebAPI('localhost', 'nouser', 'nopass')
         self.http_status_obj = AsyncBaseWebAPI('httpstat.us', 'nouser',
                                                 'nopass')
-        self.poke_obj = AsyncBaseWebAPI('pokeapi.co', 'nouser', 'nopass')
+        self.basic_auth_obj = AsyncBaseWebAPI('httpbin.org', 'fakeuser',
+                                              'nopass', basic_auth=True,
+                                              secure=True)
 
     async def test_context_manager(self) -> None:
         # check that the context manager entry and exit deal with the
@@ -106,8 +108,9 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
 
     async def test_good_request_json(self) -> None:
         # Check we get the appropriate JSON response back from requests
-        async with self.poke_obj as conn:
-            result = await conn._transaction('get', '/api/v2/pokemon/mew')
+        async with self.http_status_obj as conn:
+            conn.headers = {'Accept': 'application/json'}
+            result = await conn._transaction('get', '/200')
         self.assertIsInstance(result, dict)
 
     async def test_raise_for_status(self) -> None:
@@ -130,3 +133,11 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
                                                  timeout=timeout)
             except BaseException as e:
                 self.assertIsInstance(e, asyncio.exceptions.TimeoutError)
+
+    async def test_basic_auth(self) -> None:
+        # Test a server providing a 401 challenge
+        async with self.basic_auth_obj as conn:
+            result = await conn._transaction('get',
+                                             '/basic-auth/fakeuser/nopass')
+            self.assertEqual(result['authenticated'], True)
+            self.assertEqual(result['user'], 'fakeuser')
