@@ -121,15 +121,13 @@ class AsyncBaseWebAPI(object):
             path only starting with the first forward slash , as this function
             will add the protocol, hostname and port number appropriately
         :type path: str
-        :param kwargs: The collection of keyword arguments that the requests
-            module will accept as documented at
-            http://docs.python-requests.org/en/master/api/#main-interface
-        :return: Requests response object
-        :rtype: requests.Response
-        :raises: (requests.RequestException, requests.ConnectionError,
-            requests.HTTPError, requests.URLRequired,
-            requests.TooManyRedirects, requests.ConnectTimeout,
-            requests.ReadTimeout)
+        :param kwargs: The collection of keyword arguments that the aiohttp
+            request method will accept as documented at
+            https://docs.aiohttp.org/en/stable/client_reference.html
+        :return: Either the response string or decoded JSON object
+        :rtype: (str, list, dict)
+        :raises: (aiohttp.ClientResponseError, asyncio.exceptions.TimeoutError,
+            aiohttp.ClientConnectorError, TypeError)
         """
 
         kwargs['ssl'] = None if self.enforce_cert else False
