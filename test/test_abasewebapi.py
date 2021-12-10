@@ -24,7 +24,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
                                                 'nopass')
         self.poke_obj = AsyncBaseWebAPI('pokeapi.co', 'nouser', 'nopass')
 
-    async def test_context_manager(self):
+    async def test_context_manager(self) -> None:
         # check that the context manager entry and exit deal with the
         # aiohttp.ClientSession correctly
         async with self.context_class('no_url', 'no_user', 'no_pass') as conn:
@@ -32,7 +32,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
             self.assertIsInstance(conn._session, aiohttp.ClientSession)
         self.assertEqual(conn._session, None)
 
-    async def test_no_context_manager(self):
+    async def test_no_context_manager(self) -> None:
         # test that everything gets initiated and closed without using the
         # context manager.
         conn = self.context_class('no_url', 'no_user', 'no_pass')
@@ -42,7 +42,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
         await conn.close()
         self.assertEqual(conn._session, None)
 
-    def test_incorrect_arguments(self):
+    def test_incorrect_arguments(self) -> None:
         # Text basic input error handling
         self.assertRaises(ValueError, AsyncBaseWebAPI, 123, 'nouser', 'nopass')
         self.assertRaises(ValueError, AsyncBaseWebAPI, 'localhost', 123, 'nopass')
@@ -61,7 +61,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
                           'nopass', secure=True, enforce_cert=True,
                           alt_port='123', basic_auth=True, fake_kwarg='Yes')
 
-    async def test_url_writes(self):
+    async def test_url_writes(self) -> None:
         # Make sure the base_URL rewrites work as expected
         async with self.good_obj as conn:
             self.assertEqual('http://localhost', conn.base_url)
@@ -72,7 +72,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
         async with self.good_sec_alt_obj as conn:
             self.assertEqual('https://localhost:9999', conn.base_url)
 
-    async def test_bad_kwarg(self):
+    async def test_bad_kwarg(self) -> None:
         # Make sure that the aiohttp module complains if we supply a bad
         # kwarg to it.  We won't test the valid kwargs as that's their job.
         async with self.good_obj as conn:
@@ -81,7 +81,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
             except BaseException as e:
                 self.assertIsInstance(e, TypeError)
 
-    async def test_bad_host(self):
+    async def test_bad_host(self) -> None:
         # Check we get the appropriate error when we put a bad hostname in
         async with self.bad_dns_obj as conn:
             try:
@@ -89,7 +89,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
             except BaseException as e:
                 self.assertIsInstance(e, aiohttp.ClientConnectorError)
 
-    async def test_refused_connection(self):
+    async def test_refused_connection(self) -> None:
         # Check we get the appropriate error if the server refuses the
         # connection
         async with self.conn_refused_obj as conn:
@@ -98,19 +98,19 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
             except BaseException as e:
                 self.assertIsInstance(e, aiohttp.ClientConnectorError)
 
-    async def test_good_request_text(self):
+    async def test_good_request_text(self) -> None:
         # Check we get the appropriate string response
         async with self.http_status_obj as conn:
             result = await conn._transaction('get', '/200')
         self.assertIsInstance(result, str)
 
-    async def test_good_request_json(self):
+    async def test_good_request_json(self) -> None:
         # Check we get the appropriate JSON response back from requests
         async with self.poke_obj as conn:
             result = await conn._transaction('get', '/api/v2/pokemon/mew')
         self.assertIsInstance(result, dict)
 
-    async def test_raise_for_status(self):
+    async def test_raise_for_status(self) -> None:
         # Test that the ClientResponseError is raised for any status not
         # declared in status_codes
         async with self.http_status_obj as conn:
@@ -119,7 +119,7 @@ class TestAsyncBaseWebAPI(IsolatedAsyncioTestCase):
             except BaseException as e:
                 self.assertIsInstance(e, aiohttp.ClientResponseError)
 
-    async def test_timeout(self):
+    async def test_timeout(self) -> None:
         # Reduce aiohttp's timeout settings and request a page to sleep
         # longer than that to test timeouts.
         async with self.http_status_obj as conn:
