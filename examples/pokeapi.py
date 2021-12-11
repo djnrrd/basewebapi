@@ -1,7 +1,15 @@
 from basewebapi import BaseWebAPI, JSONBaseObject, JSONBaseList
 
 
-class Pokemon(JSONBaseObject):
+class PokeBaseObject(JSONBaseObject):
+    pass
+
+
+class PokeBaseList(JSONBaseList):
+    pass
+
+
+class Pokemon(PokeBaseObject):
 
     def __init__(self, **kwargs):
         """The Pokemon data type includes many lists of other data types.
@@ -12,7 +20,7 @@ class Pokemon(JSONBaseObject):
         super().__init__(child_objects=child_objects, **kwargs)
 
 
-class PokemonAbilities(JSONBaseList):
+class PokemonAbilities(PokeBaseList):
 
     @classmethod
     def from_json(cls, data):
@@ -21,7 +29,7 @@ class PokemonAbilities(JSONBaseList):
         return super().from_json(data, PokemonAbility)
 
 
-class PokemonAbility(JSONBaseObject):
+class PokemonAbility(PokeBaseObject):
     pass
 
 
