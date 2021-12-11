@@ -2,7 +2,7 @@ Base Web API
 ============
 
 .. include:: ../../README.rst
-    :start-after: basewebapi
+    :start-after: Introduction
     :end-before: Installation
 
 .. toctree::
@@ -10,6 +10,7 @@ Base Web API
    :caption: Contents:
 
    installation
+   usage
    class
 
 Indices and tables

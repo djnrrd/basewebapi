@@ -38,7 +38,6 @@ API Class
 Each custom API would be defined as a new class, that inherits from the
 BaseWebAPI class.  Then each endpoint the API provides can be mapped to a
 method of the API class.
-
 ::
     class PokeAPI(BaseWebAPI):
 
@@ -77,7 +76,6 @@ JSON Object Classes
 Since many APIs use JSON to define their returned data custom classes can be
 made, inheriting from the JSONBaseObject and JSONBaseList classes. Custom
 methods can then be written to interact with the data.
-
 ::
     class PokeBaseObject(JSONBaseObject):
         pass
@@ -121,7 +119,6 @@ An async based version of BaseWebAPI is provided in basewebapi
 
 This is based around the aiohttp package instead of requests and should be
 used with the async context manager.
-
 ::
     async def async_main() -> list:
             async with PokeAPI() as poke_api:
@@ -136,7 +133,6 @@ used with the async context manager.
         return loop.run_until_complete(async_main())
 
 Although it may also be used by calling the open() and close() methods.
-
 ::
     poke_api = PokeAPI()
     poke_api.open()
@@ -149,7 +145,6 @@ The open() and close() methods can be overridden if custom sign in and sign
 out endpoints need to be called. Always call super() first when overriding
 the open() method to set up the aiohttp session, and call super() last when
 overriding the close() method to tear down the aiohttp session cleanly.
-
 ::
     async def get_pokemon(self, pokemon_name: str) -> Pokemon:
         path = f"/api/v2/pokemon/{pokemon_name}/"
