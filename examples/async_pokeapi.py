@@ -51,12 +51,12 @@ class PokeAPI(AsyncBaseWebAPI):
         # dictionary
         self.headers['Accept'] = 'application/json'
 
-    async def __aenter__(self) -> PokeAPI:
+    async def open(self) -> PokeAPI:
         """The parent class is designed to be used with the context manager.
         Override the __aenter__ method if you need to add signin and token
         acquisition methods"""
         # Always await super() first
-        obj = await super().__aenter__()
+        obj = await super().open()
         # If you need to do any sign in transactions these could be done here
         return obj
 
