@@ -88,7 +88,7 @@ class PokeAPI(AsyncBaseWebAPI):
         r = await super()._transaction(method, path, **kwargs)
         # Post processing here
         # AsyncBaseWebAPI will automatically parse 'application/json'
-        # payloads, so just return the result text
+        # payloads, so just return the result
         return r
 
 
