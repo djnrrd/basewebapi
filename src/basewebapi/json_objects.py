@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class JSONBaseObject(dict):
     """Create a basic object representing a RESTful API JSON object.  If
     you need to enforce certain key/value pairs be present in an object,
@@ -9,25 +12,27 @@ class JSONBaseObject(dict):
     those objects.
 
     :param object_keys: A list of keys to enforce within the object
-    :type object_keys: list
     :param child_objects: A dictionary of keys and object types to raise
         child objects as
-    :type child_objects: dict
     :param kwargs: The JSON object in keyword argument format
     """
-    def __str__(self):
+
+    def __str__(self) -> str:
         if 'name' in self:
             return self['name']
         else:
             return super().__str__()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if 'name' in self:
             return self['name']
         else:
             return super().__repr__()
 
-    def __init__(self, object_keys=[], child_objects={}, **kwargs):
+    def __init__(self,
+                 object_keys: list[str] = [],
+                 child_objects: dict[str, object] = {},
+                 **kwargs) -> None:
         for k in kwargs:
             if all([object_keys, k not in object_keys]):
                 raise KeyError(f"{k} is not a valid key for "
@@ -36,15 +41,12 @@ class JSONBaseObject(dict):
                 kwargs[k] = child_objects[k].from_json(kwargs[k])
         super().__init__(**kwargs)
 
-
     @classmethod
-    def from_json(cls, data):
+    def from_json(cls, data: dict) -> JSONBaseObject:
         """Create a new object from JSON data
 
         :param data: JSON data returned from API
-        :type data: dict
         :return: Class object
-        :rtype: JSONBaseObject
         :raises ValueError: If a dictionary is not provided
         """
         if isinstance(data, dict):
@@ -56,15 +58,14 @@ class JSONBaseObject(dict):
 class JSONBaseList(list):
 
     @classmethod
-    def from_json(cls, data, item_class=JSONBaseObject):
+    def from_json(cls,
+                  data: list,
+                  item_class: JSONBaseObject = JSONBaseObject) -> JSONBaseList:
         """Create a new list from JSON data
 
         :param data: JSON data returned from API
-        :type data: list
         :param item_class: The class to create individual objects as
-        :type data: object
         :return: Class object
-        :rtype: JSONBaseList
         :raises ValueError: If a list is not provided
         """
         if isinstance(data, list):
@@ -75,18 +76,15 @@ class JSONBaseList(list):
         else:
             raise ValueError('Expected list object')
 
-    def filter(self, field, search_val, fuzzy=False):
-        """Search for an object and return an List of matches
+    def filter(self, field: str, search_val: str, fuzzy: bool = False) \
+            -> JSONBaseList:
+        """Search for an object and return a List of matches
 
         :param field: The search field
-        :type field: str
         :param search_val: The search value
-        :type search_val: (str, int, bool, float)
         :param fuzzy: If the search should be for the exact value (False) or a
             substring of the value
-        :type fuzzy: bool
         :return: A list of matches
-        :rtype: s1BaseList
         """
         ret_list = list()
         if field in self[0]:

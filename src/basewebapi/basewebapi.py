@@ -8,19 +8,13 @@ class BaseWebAPI(object):
     
     :param hostname: The host name or IP address of the host to query. This
         should not contain any protocols or port numbers
-    :type hostname: str
     :param api_user: The username of the API account
-    :type api_user: str
     :param api_pass: The password of the API account
-    :type api_pass: str
     :param secure: (optional): Use an SSL connection instead of plaintext
-    :type secure: bool
     :param enforce_cert: (optional): If using SSL, verify that the provided
         certificates are signed with a trusted CA
-    :type enforce_cert: bool
     :param alt_port: (optional): If the API service is running on a different
         TCP port this can be defined here.
-    :type alt_port: str
     :cvar api_user: The stored username
     :cvar api_pass: The stored password for the user
     :cvar base_url: The constructed url base, consisting of protocol,
@@ -29,10 +23,12 @@ class BaseWebAPI(object):
     :cvar enforce_cert: If the SSL certificate should be verified against
         locally installed CAs
     :cvar headers: Constructed headers to include with all transactions
+    :cvar status_codes: List of acceptable status codes from the API service
     """
 
-    def __init__(self, hostname, api_user, api_pass, secure=False,
-                 enforce_cert=False, alt_port=''):
+    def __init__(self, hostname: str, api_user: str, api_pass: str,
+                 secure: bool = False, enforce_cert: bool = False,
+                 alt_port: str = '') -> None:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
@@ -50,7 +46,8 @@ class BaseWebAPI(object):
         self.status_codes = [200]
 
     @staticmethod
-    def _input_error_check(**kwargs):
+    def _input_error_check(**kwargs) -> None:
+        """Check the supplied values are the correct data types"""
         for x in ('hostname', 'api_user', 'api_pass', 'alt_port'):
             if not isinstance(kwargs[x], str):
                 raise ValueError(f"{x} must be a string")
@@ -58,24 +55,22 @@ class BaseWebAPI(object):
             if not isinstance(kwargs[x], bool):
                 raise ValueError(f"{x} must be a boolean")
 
-    def _transaction(self, method, path, **kwargs):
+    def _transaction(self, method: str, path: str, **kwargs) \
+            -> requests.Response:
         """This method is purely to make the HTTP call and verify that the
-        HTTP response code is in the accepted
+        HTTP response code is in the accepted list defined in __init__
         be checked by the calling method as this will vary depending on the API.
 
 
         :param method: The HTTP method / RESTful verb  to use for this
             transaction.
-        :type method: str
         :param path: The path to the API object you wish to call.  This is the
             path only starting with the first forward slash , as this function
             will add the protocol, hostname and port number appropriately
-        :type path: str
         :param kwargs: The collection of keyword arguments that the requests
             module will accept as documented at
             http://docs.python-requests.org/en/master/api/#main-interface
         :return: Requests response object
-        :rtype: requests.Response
         :raises: (requests.RequestException, requests.ConnectionError,
             requests.HTTPError, requests.URLRequired,
             requests.TooManyRedirects, requests.ConnectTimeout,

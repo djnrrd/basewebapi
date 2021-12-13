@@ -1,11 +1,9 @@
-============
-Installation
-============
+=====
+Usage
+=====
 
 .. include:: ../../README.rst
-    :start-after: Installation
-    :end-before: Usage
-
+    :start-after: Usage
 
 Indices and tables
 ==================

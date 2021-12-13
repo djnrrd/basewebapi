@@ -1,2 +1,7 @@
 requests
+aiohttp
 sphinx
+sphinx_autodoc_typehints
+sphinx-rtd-theme
+build
+twine

@@ -1,8 +1,15 @@
 from basewebapi import BaseWebAPI, JSONBaseObject, JSONBaseList
 
 
+class PokeBaseObject(JSONBaseObject):
+    pass
 
-class Pokemon(JSONBaseObject):
+
+class PokeBaseList(JSONBaseList):
+    pass
+
+
+class Pokemon(PokeBaseObject):
 
     def __init__(self, **kwargs):
         """The Pokemon data type includes many lists of other data types.
@@ -13,7 +20,7 @@ class Pokemon(JSONBaseObject):
         super().__init__(child_objects=child_objects, **kwargs)
 
 
-class PokemonAbilities(JSONBaseList):
+class PokemonAbilities(PokeBaseList):
 
     @classmethod
     def from_json(cls, data):
@@ -22,7 +29,7 @@ class PokemonAbilities(JSONBaseList):
         return super().from_json(data, PokemonAbility)
 
 
-class PokemonAbility(jo.JSONBaseObject):
+class PokemonAbility(PokeBaseObject):
     pass
 
 
@@ -45,7 +52,8 @@ class PokeAPI(BaseWebAPI):
         path = f"/api/v2/pokemon/{pokemon_name}/"
         pokemon_data = self._transaction('get', path)
         # any further processing you may need to do
-        return pokemon_data
+        # Return the Pokemon object parsed from the JSON object
+        return Pokemon.from_json(pokemon_data)
 
     def _transaction(self, method, path, **kwargs):
         # Any pre-processing here
@@ -53,3 +61,21 @@ class PokeAPI(BaseWebAPI):
         # We know that this is a JSON based API so we can use the requests
         # json method of the Response object
         return r.json()
+
+
+def main() -> list:
+    """Get 4 Pokemon objects and return them in a list
+
+    :return: List of Pokemon objects
+    """
+    poke_api = PokeAPI()
+    result = list()
+    for pokemon in ['mew', 'ditto', 'pikachu', 'smoochum']:
+        result.append(poke_api.get_pokemon(pokemon))
+    return result
+
+
+if __name__ == '__main__':
+    results = main()
+    print([x for x in results])
+    print([type(x) for x in results])
