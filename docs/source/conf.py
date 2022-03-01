@@ -13,7 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src/'))
-from basewebapi.conf import VERSION
+
 
 
 # -- Project information -----------------------------------------------------
@@ -23,7 +23,7 @@ copyright = '2021, DJ Nrrd'
 author = 'DJ Nrrd'
 
 # The full version, including alpha/beta/rc tags
-release = VERSION
+release = '0.4.1'
 
 
 # -- General configuration ---------------------------------------------------
