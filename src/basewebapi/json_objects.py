@@ -31,10 +31,10 @@ class JSONBaseObject(dict):
                  child_objects: dict[str, object] = None,
                  **kwargs) -> None:
         for k in kwargs:
-            if all([object_keys, k not in object_keys]):
+            if object_keys and k not in object_keys:
                 raise KeyError(f"{k} is not a valid key for "
                                f"self.__class__.__name__")
-            if all([k in child_objects, kwargs[k]]):
+            if child_objects and k in child_objects and kwargs[k]:
                 kwargs[k] = child_objects[k].from_json(kwargs[k])
         super().__init__(**kwargs)
 
