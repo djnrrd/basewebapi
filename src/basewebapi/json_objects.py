@@ -27,8 +27,8 @@ class JSONBaseObject(dict):
             return super().__repr__()
 
     def __init__(self,
-                 object_keys: list[str] = [],
-                 child_objects: dict[str, object] = {},
+                 object_keys: list[str] = None,
+                 child_objects: dict[str, object] = None,
                  **kwargs) -> None:
         for k in kwargs:
             if all([object_keys, k not in object_keys]):
