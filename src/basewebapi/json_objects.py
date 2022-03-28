@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 class JSONBaseObject(dict):
     """Create a basic object representing a RESTful API JSON object.  If
     you need to enforce certain key/value pairs be present in an object,
@@ -42,7 +39,7 @@ class JSONBaseObject(dict):
         super().__init__(**kwargs)
 
     @classmethod
-    def from_json(cls, data: dict) -> JSONBaseObject:
+    def from_json(cls, data: dict) -> 'JSONBaseObject':
         """Create a new object from JSON data
 
         :param data: JSON data returned from API
@@ -60,7 +57,8 @@ class JSONBaseList(list):
     @classmethod
     def from_json(cls,
                   data: list,
-                  item_class: JSONBaseObject = JSONBaseObject) -> JSONBaseList:
+                  item_class: JSONBaseObject = JSONBaseObject) \
+            -> 'JSONBaseList':
         """Create a new list from JSON data
 
         :param data: JSON data returned from API
@@ -77,7 +75,7 @@ class JSONBaseList(list):
             raise ValueError('Expected list object')
 
     def filter(self, field: str, search_val: str, fuzzy: bool = False) \
-            -> JSONBaseList:
+            -> 'JSONBaseList':
         """Search for an object and return a List of matches
 
         :param field: The search field

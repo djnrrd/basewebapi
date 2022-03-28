@@ -1,4 +1,3 @@
-from __future__ import annotations
 import aiohttp
 from typing import Optional, Type, Union
 from types import TracebackType
@@ -63,7 +62,7 @@ class AsyncBaseWebAPI(object):
         manager"""
         pass
 
-    async def __aenter__(self) -> AsyncBaseWebAPI:
+    async def __aenter__(self) -> 'AsyncBaseWebAPI':
         """Entry point for the async context manager"""
         await self.open()
         return self
