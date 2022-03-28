@@ -19,11 +19,11 @@ sys.path.insert(0, os.path.abspath('../../src/'))
 # -- Project information -----------------------------------------------------
 
 project = 'basewebapi'
-copyright = '2021, DJ Nrrd'
+copyright = '2022, DJ Nrrd'
 author = 'DJ Nrrd'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.2'
+release = '0.4.3'
 
 
 # -- General configuration ---------------------------------------------------
