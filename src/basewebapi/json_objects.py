@@ -1,3 +1,6 @@
+from typing import Dict, List
+
+
 class JSONBaseObject(dict):
     """Create a basic object representing a RESTful API JSON object.  If
     you need to enforce certain key/value pairs be present in an object,
@@ -27,8 +30,8 @@ class JSONBaseObject(dict):
             return super().__repr__()
 
     def __init__(self,
-                 object_keys: list[str] = None,
-                 child_objects: dict[str, object] = None,
+                 object_keys: List[str] = None,
+                 child_objects: Dict[str, object] = None,
                  **kwargs) -> None:
         for k in kwargs:
             if object_keys and k not in object_keys:
@@ -39,7 +42,7 @@ class JSONBaseObject(dict):
         super().__init__(**kwargs)
 
     @classmethod
-    def from_json(cls, data: dict) -> 'JSONBaseObject':
+    def from_json(cls, data: Dict) -> 'JSONBaseObject':
         """Create a new object from JSON data
 
         :param data: JSON data returned from API
@@ -56,7 +59,7 @@ class JSONBaseList(list):
 
     @classmethod
     def from_json(cls,
-                  data: list,
+                  data: List,
                   item_class: JSONBaseObject = JSONBaseObject) \
             -> 'JSONBaseList':
         """Create a new list from JSON data
