@@ -36,12 +36,12 @@ class JSONBaseObject(dict):
                  child_objects: Dict[str, object] = None,
                  **kwargs) -> None:
         tmp_dict = kwargs.copy()
-        for k in kwargs.items():
-            if object_keys and k not in object_keys:
-                raise KeyError(f"{k} is not a valid key for "
-                               f"self.__class__.__name__")
-            if child_objects and k in child_objects and kwargs[k]:
-                tmp_dict[k] = child_objects[k].from_json(kwargs[k])
+        for key, value in kwargs.items():
+            if object_keys and key not in object_keys:
+                raise KeyError(f"{key} is not a valid key for "
+                               f"{self.__class__.__name__}")
+            if child_objects and key in child_objects and value:
+                tmp_dict[key] = child_objects[key].from_json(value)
         super().__init__(**tmp_dict)
 
     @classmethod
