@@ -1,3 +1,7 @@
+"""A set of basic objects for inheriting that map JSON Objects and Lists to
+python dict and list style objects.
+
+"""
 from typing import Dict, List
 
 
@@ -20,26 +24,25 @@ class JSONBaseObject(dict):
     def __str__(self) -> str:
         if 'name' in self:
             return self['name']
-        else:
-            return super().__str__()
+        return super().__str__()
 
     def __repr__(self) -> str:
         if 'name' in self:
             return self['name']
-        else:
-            return super().__repr__()
+        return super().__repr__()
 
     def __init__(self,
                  object_keys: List[str] = None,
                  child_objects: Dict[str, object] = None,
                  **kwargs) -> None:
-        for k in kwargs:
+        tmp_dict = kwargs.copy()
+        for k in kwargs.items():
             if object_keys and k not in object_keys:
                 raise KeyError(f"{k} is not a valid key for "
                                f"self.__class__.__name__")
             if child_objects and k in child_objects and kwargs[k]:
-                kwargs[k] = child_objects[k].from_json(kwargs[k])
-        super().__init__(**kwargs)
+                tmp_dict[k] = child_objects[k].from_json(kwargs[k])
+        super().__init__(**tmp_dict)
 
     @classmethod
     def from_json(cls, data: Dict) -> 'JSONBaseObject':
@@ -51,11 +54,12 @@ class JSONBaseObject(dict):
         """
         if isinstance(data, dict):
             return cls(**data)
-        else:
-            raise ValueError('Expected dictionary object')
+        raise ValueError('Expected dictionary object')
 
 
 class JSONBaseList(list):
+    """Create a basic list object representing a RESTful API JSON list.
+    """
 
     @classmethod
     def from_json(cls,
@@ -70,12 +74,11 @@ class JSONBaseList(list):
         :raises ValueError: If a list is not provided
         """
         if isinstance(data, list):
-            temp_list = list()
+            temp_list = []
             for item in data:
                 temp_list.append(item_class.from_json(item))
             return cls(temp_list)
-        else:
-            raise ValueError('Expected list object')
+        raise ValueError('Expected list object')
 
     def filter(self, field: str, search_val: str, fuzzy: bool = False) \
             -> 'JSONBaseList':
