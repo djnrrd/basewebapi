@@ -1,11 +1,13 @@
+"""Module containing the synchronous BaseWebAPI class
+"""
 import requests
 
 
-class BaseWebAPI(object):
+class BaseWebAPI:
     """Basic class for all HTTP based apis.  This class will provide the basic
     constructor and transaction methods, along with checking HTTP return
     codes. All other API modules should extend this class
-    
+
     :param hostname: The host name or IP address of the host to query. This
         should not contain any protocols or port numbers
     :param api_user: The username of the API account
@@ -32,9 +34,7 @@ class BaseWebAPI(object):
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
-        self.apiuser = api_user
         self.api_pass = api_pass
-        self.apipass = api_pass
         if secure:
             self.base_url = f"https://{hostname}"
         else:
@@ -48,12 +48,12 @@ class BaseWebAPI(object):
     @staticmethod
     def _input_error_check(**kwargs) -> None:
         """Check the supplied values are the correct data types"""
-        for x in ('hostname', 'api_user', 'api_pass', 'alt_port'):
-            if not isinstance(kwargs[x], str):
-                raise ValueError(f"{x} must be a string")
-        for x in ('secure', 'enforce_cert'):
-            if not isinstance(kwargs[x], bool):
-                raise ValueError(f"{x} must be a boolean")
+        for var in ('hostname', 'api_user', 'api_pass', 'alt_port'):
+            if not isinstance(kwargs[var], str):
+                raise ValueError(f"{var} must be a string")
+        for var in ('secure', 'enforce_cert'):
+            if not isinstance(kwargs[var], bool):
+                raise ValueError(f"{var} must be a boolean")
 
     def _transaction(self, method: str, path: str, **kwargs) \
             -> requests.Response:
@@ -80,10 +80,9 @@ class BaseWebAPI(object):
         kwargs['verify'] = self.enforce_cert
         kwargs['headers'] = self.headers
         url = self.base_url + path
-        r = requests.request(method, url, **kwargs)
-        if r.status_code not in self.status_codes:
+        result = requests.request(method, url, **kwargs)
+        if result.status_code not in self.status_codes:
             raise requests.exceptions.HTTPError(f"HTTP Status code "
-                                                f"{r.status_code} not in "
+                                                f"{result.status_code} not in "
                                                 f"valid response codes")
-        else:
-            return r
+        return result
