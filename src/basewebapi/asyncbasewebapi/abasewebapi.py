@@ -1,9 +1,11 @@
-import aiohttp
+"""Module containing the synchronous BaseWebAPI class
+"""
 from typing import Optional, Type, Union
 from types import TracebackType
+import aiohttp
 
 
-class AsyncBaseWebAPI(object):
+class AsyncBaseWebAPI:
     """Basic class for HTTP based apis.  This class will provide the basic
     constructor and transaction methods, along with checking HTTP return
     codes. All other API modules should extend this class
@@ -88,20 +90,20 @@ class AsyncBaseWebAPI(object):
         if self._session:
             try:
                 await self._session.close()
-            except BaseException as e:
-                raise e
+            except BaseException as exception:
+                raise exception
             finally:
                 self._session = None
 
     @staticmethod
     def _input_error_check(**kwargs) -> None:
         """Check the supplied values are the correct data types"""
-        for x in ('hostname', 'api_user', 'api_pass', 'alt_port'):
-            if not isinstance(kwargs[x], str):
-                raise ValueError(f"{x} must be a string")
-        for x in ('secure', 'enforce_cert', 'basic_auth'):
-            if not isinstance(kwargs[x], bool):
-                raise ValueError(f"{x} must be a boolean")
+        for var in ('hostname', 'api_user', 'api_pass', 'alt_port'):
+            if not isinstance(kwargs[var], str):
+                raise ValueError(f"{var} must be a string")
+        for var in ('secure', 'enforce_cert', 'basic_auth'):
+            if not isinstance(kwargs[var], bool):
+                raise ValueError(f"{var} must be a boolean")
 
     async def _transaction(self, method: str, path: str, **kwargs) \
             -> Union[str, dict, list]:
@@ -133,5 +135,4 @@ class AsyncBaseWebAPI(object):
                                                   message=await conn.text())
             if conn.content_type == 'application/json':
                 return await conn.json()
-            else:
-                return await conn.text()
+            return await conn.text()
