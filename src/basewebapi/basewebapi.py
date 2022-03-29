@@ -3,7 +3,7 @@
 import requests
 
 
-class BaseWebAPI(object):
+class BaseWebAPI:
     """Basic class for all HTTP based apis.  This class will provide the basic
     constructor and transaction methods, along with checking HTTP return
     codes. All other API modules should extend this class
