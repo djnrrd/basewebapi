@@ -2,6 +2,7 @@
 python dict and list style objects.
 
 """
+
 from typing import Dict, List
 
 
@@ -22,30 +23,33 @@ class JSONBaseObject(dict):
     """
 
     def __str__(self) -> str:
-        if 'name' in self:
-            return self['name']
+        if "name" in self:
+            return self["name"]
         return super().__str__()
 
     def __repr__(self) -> str:
-        if 'name' in self:
-            return self['name']
+        if "name" in self:
+            return self["name"]
         return super().__repr__()
 
-    def __init__(self,
-                 object_keys: List[str] = None,
-                 child_objects: Dict[str, object] = None,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        object_keys: List[str] = None,
+        child_objects: Dict[str, object] = None,
+        **kwargs,
+    ) -> None:
         tmp_dict = kwargs.copy()
         for key, value in kwargs.items():
             if object_keys and key not in object_keys:
-                raise KeyError(f"{key} is not a valid key for "
-                               f"{self.__class__.__name__}")
+                raise KeyError(
+                    f"{key} is not a valid key for " f"{self.__class__.__name__}"
+                )
             if child_objects and key in child_objects and value:
                 tmp_dict[key] = child_objects[key].from_json(value)
         super().__init__(**tmp_dict)
 
     @classmethod
-    def from_json(cls, data: Dict) -> 'JSONBaseObject':
+    def from_json(cls, data: Dict) -> "JSONBaseObject":
         """Create a new object from JSON data
 
         :param data: JSON data returned from API
@@ -54,18 +58,16 @@ class JSONBaseObject(dict):
         """
         if isinstance(data, dict):
             return cls(**data)
-        raise ValueError('Expected dictionary object')
+        raise ValueError("Expected dictionary object")
 
 
 class JSONBaseList(list):
-    """Create a basic list object representing a RESTful API JSON list.
-    """
+    """Create a basic list object representing a RESTful API JSON list."""
 
     @classmethod
-    def from_json(cls,
-                  data: List,
-                  item_class: JSONBaseObject = JSONBaseObject) \
-            -> 'JSONBaseList':
+    def from_json(
+        cls, data: List, item_class: JSONBaseObject = JSONBaseObject
+    ) -> "JSONBaseList":
         """Create a new list from JSON data
 
         :param data: JSON data returned from API
@@ -78,10 +80,11 @@ class JSONBaseList(list):
             for item in data:
                 temp_list.append(item_class.from_json(item))
             return cls(temp_list)
-        raise ValueError('Expected list object')
+        raise ValueError("Expected list object")
 
-    def filter(self, field: str, search_val: str, fuzzy: bool = False) \
-            -> 'JSONBaseList':
+    def filter(
+        self, field: str, search_val: str, fuzzy: bool = False
+    ) -> "JSONBaseList":
         """Search for an object and return a List of matches
 
         :param field: The search field
@@ -91,9 +94,9 @@ class JSONBaseList(list):
         :return: A list of matches
         """
         if fuzzy:
-            ret_list = [x for x in self
-                        if str(search_val).lower()
-                        in str(x.get(field)).lower()]
+            ret_list = [
+                x for x in self if str(search_val).lower() in str(x.get(field)).lower()
+            ]
         else:
             ret_list = [x for x in self if x.get(field) == search_val]
         return self.__class__(ret_list)

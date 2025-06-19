@@ -1,6 +1,24 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+[project]
+name = "basewebapi"
+version = "0.4.6"
+description = "A python module defining a basic object orientated framework that can be inherited by custom modules that interact with HTTP based RESTful APIs."
+authors = [
+    {name = "DJ Nrrd", email =  "<djnrrd@gmail.com>" }
 ]
-build-backend = "setuptools.build_meta"
+readme = "README.rst"
+requires-python = ">=3.9,<4.0"
+dependencies = [
+    "requests (>=2.32.4,<3.0)",
+    "aiohttp (>=3.12.13,<4.0)",
+    "urllib3 (>=2.5.0,<3.0)",
+    "zipp (>=3.23.0,<4.0)",
+]
+
+[project.group.docs.dependencies]
+sphinx = "^8.2.3"
+sphinx-autodoc-typehints = "^3.2.0"
+sphinx-rtd-theme = "^3.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

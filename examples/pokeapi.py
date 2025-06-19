@@ -16,7 +16,7 @@ class Pokemon(PokeBaseObject):
         Define just the 'abilities' field to create the child
         PokemonAbilities list.
         """
-        child_objects = {'abilities': PokemonAbilities}
+        child_objects = {"abilities": PokemonAbilities}
         super().__init__(child_objects=child_objects, **kwargs)
 
 
@@ -24,8 +24,7 @@ class PokemonAbilities(PokeBaseList):
 
     @classmethod
     def from_json(cls, data):
-        """Make this return a list of PokemonAbility objects
-        """
+        """Make this return a list of PokemonAbility objects"""
         return super().from_json(data, PokemonAbility)
 
 
@@ -39,18 +38,18 @@ class PokeAPI(BaseWebAPI):
         """The Poke API is a simple, static API with no authentication so
         object initialisation does not require external arguments"""
         # Call super with the static values of the Poke API
-        super().__init__('pokeapi.co', '', '', secure=True)
+        super().__init__("pokeapi.co", "", "", secure=True)
         # Headers tend to vary from API to API so these would get set after
         # calling super which will have initiallised self.headers as an empty
         # dictionary
-        self.headers['Accept'] = 'application/json'
+        self.headers["Accept"] = "application/json"
 
     def get_pokemon(self, pokemon_name):
         """Get data about an individual pokemon"""
         # Path should be the absolute path to the API resource, in this
         # instance the pokemon name makes up part of the path
         path = f"/api/v2/pokemon/{pokemon_name}/"
-        pokemon_data = self._transaction('get', path)
+        pokemon_data = self._transaction("get", path)
         # any further processing you may need to do
         # Return the Pokemon object parsed from the JSON object
         return Pokemon.from_json(pokemon_data)
@@ -70,12 +69,12 @@ def main() -> list:
     """
     poke_api = PokeAPI()
     result = list()
-    for pokemon in ['mew', 'ditto', 'pikachu', 'smoochum']:
+    for pokemon in ["mew", "ditto", "pikachu", "smoochum"]:
         result.append(poke_api.get_pokemon(pokemon))
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     results = main()
     print([x for x in results])
     print([type(x) for x in results])

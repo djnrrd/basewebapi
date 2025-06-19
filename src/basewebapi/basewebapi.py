@@ -1,5 +1,6 @@
 """Module containing the synchronous BaseWebAPI class
 """
+
 import requests
 
 
@@ -28,9 +29,15 @@ class BaseWebAPI:
     :cvar status_codes: List of acceptable status codes from the API service
     """
 
-    def __init__(self, hostname: str, api_user: str, api_pass: str,
-                 secure: bool = False, enforce_cert: bool = False,
-                 alt_port: str = '') -> None:
+    def __init__(
+        self,
+        hostname: str,
+        api_user: str,
+        api_pass: str,
+        secure: bool = False,
+        enforce_cert: bool = False,
+        alt_port: str = "",
+    ) -> None:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
@@ -48,15 +55,14 @@ class BaseWebAPI:
     @staticmethod
     def _input_error_check(**kwargs) -> None:
         """Check the supplied values are the correct data types"""
-        for var in ('hostname', 'api_user', 'api_pass', 'alt_port'):
+        for var in ("hostname", "api_user", "api_pass", "alt_port"):
             if not isinstance(kwargs[var], str):
                 raise ValueError(f"{var} must be a string")
-        for var in ('secure', 'enforce_cert'):
+        for var in ("secure", "enforce_cert"):
             if not isinstance(kwargs[var], bool):
                 raise ValueError(f"{var} must be a boolean")
 
-    def _transaction(self, method: str, path: str, **kwargs) \
-            -> requests.Response:
+    def _transaction(self, method: str, path: str, **kwargs) -> requests.Response:
         """This method is purely to make the HTTP call and verify that the
         HTTP response code is in the accepted list defined in __init__
         be checked by the calling method as this will vary depending on the API.
@@ -77,12 +83,14 @@ class BaseWebAPI:
             requests.ReadTimeout)
         """
 
-        kwargs['verify'] = self.enforce_cert
-        kwargs['headers'] = self.headers
+        kwargs["verify"] = self.enforce_cert
+        kwargs["headers"] = self.headers
         url = self.base_url + path
         result = requests.request(method, url, **kwargs)
         if result.status_code not in self.status_codes:
-            raise requests.exceptions.HTTPError(f"HTTP Status code "
-                                                f"{result.status_code} not in "
-                                                f"valid response codes")
+            raise requests.exceptions.HTTPError(
+                f"HTTP Status code "
+                f"{result.status_code} not in "
+                f"valid response codes"
+            )
         return result
