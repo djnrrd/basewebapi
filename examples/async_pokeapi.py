@@ -20,7 +20,7 @@ class Pokemon(PokeBaseObject):
         Define just the 'abilities' field to create the child
         PokemonAbilities list.
         """
-        child_objects = {'abilities': PokemonAbilities}
+        child_objects = {"abilities": PokemonAbilities}
         super().__init__(child_objects=child_objects, **kwargs)
 
 
@@ -28,14 +28,13 @@ class PokemonAbilities(PokeBaseList):
 
     @classmethod
     def from_json(cls, data: list) -> PokemonAbilities:
-        """Make this return a list of PokemonAbility objects
-        """
+        """Make this return a list of PokemonAbility objects"""
         return super().from_json(data, PokemonAbility)
 
 
 class PokemonAbility(PokeBaseObject):
-    """Even if no extra functions are needed, declare the objects anyway.
-    """
+    """Even if no extra functions are needed, declare the objects anyway."""
+
     pass
 
 
@@ -45,11 +44,11 @@ class PokeAPI(AsyncBaseWebAPI):
         """The Poke API is a simple, static API with no authentication so
         object initialisation does not require external arguments"""
         # Call super with the static values of the Poke API
-        super().__init__('pokeapi.co', '', '', secure=True)
+        super().__init__("pokeapi.co", "", "", secure=True)
         # Headers tend to vary from API to API so these would get set after
         # calling super which will have initiallised self.headers as an empty
         # dictionary
-        self.headers['Accept'] = 'application/json'
+        self.headers["Accept"] = "application/json"
 
     async def open(self) -> PokeAPI:
         """The parent class is designed to be used with the context manager.
@@ -70,13 +69,12 @@ class PokeAPI(AsyncBaseWebAPI):
         # instance the pokemon name makes up part of the path
         path = f"/api/v2/pokemon/{pokemon_name}/"
         # get the data in an Async call
-        pokemon_data = await self._transaction('get', path)
+        pokemon_data = await self._transaction("get", path)
         # any further processing you may need to do
         # Return the Pokemon object parsed from the JSON object
         return Pokemon.from_json(pokemon_data)
 
-    async def _transaction(self, method: str, path: str, **kwargs) \
-            -> Union[dict, list]:
+    async def _transaction(self, method: str, path: str, **kwargs) -> Union[dict, list]:
         """Get the result for the HTTP method and URL Path
 
         :param method: The HTTP method, 'get', 'post', etc.
@@ -101,7 +99,7 @@ async def async_main() -> list:
     # Use the api with the context manager
     async with PokeAPI() as poke_api:
         calls = list()
-        for pokemon in ['mew', 'ditto', 'pikachu', 'smoochum']:
+        for pokemon in ["mew", "ditto", "pikachu", "smoochum"]:
             # Add the Coroutines to a list
             calls.append(poke_api.get_pokemon(pokemon))
         # run the Coroutines together and return the results
@@ -118,7 +116,7 @@ def main() -> list:
     return loop.run_until_complete(async_main())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     results = main()
     print([x for x in results])
     print([type(x) for x in results])

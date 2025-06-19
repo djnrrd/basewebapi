@@ -1,5 +1,6 @@
 """Module containing the synchronous BaseWebAPI class
 """
+
 from typing import Optional, Type, Union
 from types import TracebackType
 import aiohttp
@@ -32,10 +33,16 @@ class AsyncBaseWebAPI:
     :cvar basic_auth: If HTTP Basic auth should be used
     """
 
-    def __init__(self, hostname: str, api_user: str, api_pass: str,
-                 secure: bool = False, enforce_cert: bool = False,
-                 alt_port: str = '', basic_auth: bool = False) \
-            -> None:
+    def __init__(
+        self,
+        hostname: str,
+        api_user: str,
+        api_pass: str,
+        secure: bool = False,
+        enforce_cert: bool = False,
+        alt_port: str = "",
+        basic_auth: bool = False,
+    ) -> None:
         # Input error checking
         self._input_error_check(**locals())
         self.api_user = api_user
@@ -56,23 +63,27 @@ class AsyncBaseWebAPI:
         """Should not be using with the normal context manager"""
         raise TypeError("Use async with instead")
 
-    def __exit__(self,
-                 exc_type: Optional[Type[BaseException]],
-                 exc_val: Optional[BaseException],
-                 exc_tb: Optional[TracebackType]) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         """This should never be called but is required for the normal context
         manager"""
         pass
 
-    async def __aenter__(self) -> 'AsyncBaseWebAPI':
+    async def __aenter__(self) -> "AsyncBaseWebAPI":
         """Entry point for the async context manager"""
         await self.open()
         return self
 
-    async def __aexit__(self,
-                        exc_type: Optional[Type[BaseException]],
-                        exc_val: Optional[BaseException],
-                        exc_tb: Optional[TracebackType]) -> None:
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         """Exit point for the async context manager"""
         await self.close()
 
@@ -98,15 +109,16 @@ class AsyncBaseWebAPI:
     @staticmethod
     def _input_error_check(**kwargs) -> None:
         """Check the supplied values are the correct data types"""
-        for var in ('hostname', 'api_user', 'api_pass', 'alt_port'):
+        for var in ("hostname", "api_user", "api_pass", "alt_port"):
             if not isinstance(kwargs[var], str):
                 raise ValueError(f"{var} must be a string")
-        for var in ('secure', 'enforce_cert', 'basic_auth'):
+        for var in ("secure", "enforce_cert", "basic_auth"):
             if not isinstance(kwargs[var], bool):
                 raise ValueError(f"{var} must be a boolean")
 
-    async def _transaction(self, method: str, path: str, **kwargs) \
-            -> Union[str, dict, list]:
+    async def _transaction(
+        self, method: str, path: str, **kwargs
+    ) -> Union[str, dict, list]:
         """This method is purely to make the HTTP call and verify that the
         HTTP status code is in the accepted list defined in __init__
         be checked by the calling method as this will vary depending on the API.
@@ -125,14 +137,17 @@ class AsyncBaseWebAPI:
             aiohttp.ClientConnectorError, TypeError)
         """
 
-        kwargs['ssl'] = None if self.enforce_cert else False
-        kwargs['headers'] = self.headers
+        kwargs["ssl"] = None if self.enforce_cert else False
+        kwargs["headers"] = self.headers
         url = self.base_url + path
         async with self._session.request(method, url, **kwargs) as conn:
             if conn.status not in self.status_codes:
-                raise aiohttp.ClientResponseError(conn.request_info, (conn,),
-                                                  status=conn.status,
-                                                  message=await conn.text())
-            if conn.content_type == 'application/json':
+                raise aiohttp.ClientResponseError(
+                    conn.request_info,
+                    (conn,),
+                    status=conn.status,
+                    message=await conn.text(),
+                )
+            if conn.content_type == "application/json":
                 return await conn.json()
             return await conn.text()
