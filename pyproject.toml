@@ -1,6 +1,18 @@
+[tool.poetry]
+name = "basewebapi"
+version = "0.4.6"
+description = "A python module defining a basic object orientated framework that can be inherited by custom modules that interact with HTTP based RESTful APIs."
+authors = ["DJ Nrrd <djnrrd@gmail.com>"]
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+requests = "^2.32.4"
+aiohttp = "^3.12.13"
+urllib3 = "^2.5.0"
+zipp = "^3.23.0"
+
+
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
