@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: ${{ github.head_ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
@@ -16,6 +17,6 @@ jobs:
           pip install poetry
       - name: Install dependencies
         run: |
-          poetry install --no-root
+          python -m poetry install --no-root
       - name: Run Tests
-        run: poetry run python -m unittest discover -s test/
+        run: python -m poetry run python -m unittest discover -s test/
