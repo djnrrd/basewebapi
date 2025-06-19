@@ -16,6 +16,6 @@ jobs:
           pip install poetry
       - name: Install dependencies
         run: |
-          python -m poetry install --no-root
+          python -m poetry install
       - name: Run Tests
         run: python -m poetry run python -m unittest discover -s test/
