@@ -6,7 +6,7 @@ authors = ["DJ Nrrd <djnrrd@gmail.com>"]
 readme = "README.rst"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.9"
 requests = "^2.32.4"
 aiohttp = "^3.12.13"
 urllib3 = "^2.5.0"
